@@ -50,9 +50,7 @@ class Term {
         $this->name = $term->name;
         $this->parent = $term->parent;
         $this->taxonomy = $term->taxonomy;
-        // $this->term_group = $term->term_group;
         $this->description = $term->description;
-        // $this->term_taxonomy_id = $term->term_taxonomy_id;
 
         $metadata = get_metadata_raw( 'term', $this->term_id );
         $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
