@@ -10,88 +10,58 @@ class Post {
 
     public $slug;
 
-    public $categories;
-
-    public $tags;
-
-    public $collections;
-
-    public $author;
-
-    public $publish_time;
-
-    public $images;
-
-    public $featured_image;
+    public $guid;
 
     public $title;
 
-    public $lead;
-
-    public $body;
+    public $content;
 
     public $excerpt;
 
+    public $author;
+
+    public $date;
+
+    public $metadata;
+
+    private static $default_metadata_keys = [
+        '_thumbnail_id',
+    ];
+
+    private static $all_posts = null;
+
+    public static function export() {
+        if ( is_null( self::$all_posts ) ) {
+
+            self::$default_metadata_keys = apply_filters( 'kntnt-post-export-post-metadata-keys', self::$default_metadata_keys );
+
+            $posts = get_posts( [ 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => null ] );
+            $posts = apply_filters( 'kntnt-post-export-posts', $posts );
+            foreach ( $posts as $post ) {
+                self::$all_posts[ $post->ID ] = new Post( $post );
+            }
+
+        }
+        return self::$all_posts;
+    }
+
     public function __construct( $post ) {
+
         $this->id = $post->ID;
         $this->slug = $post->post_name;
-        $this->categories = $this->categories( $post );
-        $this->tags = $this->tags( $post->ID );
-        $this->collections = $this->collections( $post );
-        $this->author = new Author( $post->post_author );
-        $this->publish_time = $post->post_date_gmt;
-        $this->images = $this->images( $post );
-        $this->featured_image = $this->featured_image( $post );
+        $this->guid = $post->guid;
         $this->title = $post->post_title;
-        $this->lead = $this->lead( $post );
-        $this->body = $post->post_content;
+        $this->content = $post->post_content;
         $this->excerpt = $post->post_excerpt;
-        Plugin::log( 'Export object for post %s: %s', $post->ID, $this );
-    }
+        $this->author = $post->post_author;
+        $this->date = $post->post_date;
 
-    private function categories( $post ) {
-        $categories = [];
-        $terms = get_the_terms( $post, 'category' );
-        if ( $terms ) {
-            foreach ( $terms as $term ) {
-                $categories[] = new Category( $term );
-            }
-        }
-        return $categories;
-    }
+        $metadata = get_metadata_raw( 'post', $this->id );
+        $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
+        $this->metadata = apply_filters( 'kntnt-post-export-post-metadata', $metadata );
 
-    private function tags( $post ) {
-        $tags = [];
-        $terms = get_the_terms( $post, 'post_tag' );
-        if ( $terms ) {
-            foreach ( $terms as $term ) {
-                $tags[] = new Tag( $term );
-            }
-        }
-        return $tags;
-    }
+        Plugin::log( 'Created %s', $this );
 
-    private function collections( $post ) {
-        $collections = [];
-        $terms = get_the_terms( $post, 'collections' );
-        if ( $terms ) {
-            foreach ( $terms as $term ) {
-                $collections[] = new Collection( $term );
-            }
-        }
-        return $collections;
-    }
-
-    private function images( $post ) {
-        return []; // TODO: Sök alla bilder i body.
-    }
-
-    private function featured_image( $post ) {
-        return new Image( (int) get_post_meta( $post->ID, '_thumbnail_id', true ) );
-    }
-
-    private function lead( $post ) {
-        return get_post_meta( $post->ID, 'lead', true );
     }
 
 }

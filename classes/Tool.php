@@ -26,35 +26,17 @@ class Tool {
                 return;
             }
 
-            $this->export();
+            // Export
+            $export = new \stdClass();
+            $export->attachments = Attachment::export();
+            $export->users = User::export();
+            $export->post_terms = Term::export();
+            $export->posts = Post::export();
+            $this->export = json_encode( $export );
 
         }
 
         $this->render_page();
-
-    }
-
-    public function export() {
-
-        $args = [
-            'nopaging' => true,
-            'post_type' => 'post',
-            'post_status' => 'publish',
-            'suppress_filters' => true,
-        ];
-
-        Plugin::log( 'Retrieve posts matching these arguments: %s', $args );
-
-        $posts = ( new \WP_Query )->query( $args );
-
-        Plugin::log( 'Number of retrieved posts: %s', count( $posts ) );
-
-        $export = [];
-        foreach ( $posts as $post ) {
-            $export[] = new Post( $post );
-        }
-
-        $this->export = json_encode( $export );
 
     }
 
