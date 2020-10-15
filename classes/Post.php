@@ -22,6 +22,8 @@ class Post {
 
     public $date;
 
+    public $terms;
+
     public $metadata;
 
     private static $default_metadata_keys = [
@@ -55,6 +57,16 @@ class Post {
         $this->excerpt = $post->post_excerpt;
         $this->author = $post->post_author;
         $this->date = $post->post_date;
+
+        $this->terms = [];
+        $taxonomies = get_object_taxonomies( $post );
+        foreach ( $taxonomies as $taxonomy ) {
+            if ( is_array( $terms = get_the_terms( $post, $taxonomy ) ) ) {
+                foreach ( $terms as $term ) {
+                    $this->terms[] = $term->term_id;
+                }
+            }
+        }
 
         $metadata = get_metadata_raw( 'post', $this->id );
         $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
