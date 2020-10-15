@@ -19,7 +19,7 @@
 namespace Kntnt\Posts_Export;
 
 // Uncomment following line to debug this plugin.
-define( 'KNTNT_POSTS_EXPORT_DEBUG', true );
+// define( 'KNTNT_POSTS_EXPORT_DEBUG', true );
 
 require 'autoload.php';
 
