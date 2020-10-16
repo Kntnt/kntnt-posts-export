@@ -58,7 +58,7 @@ class User {
         return self::$all_users;
     }
 
-    public function __construct( $user, $roles ) {
+    private function __construct( $user, $roles ) {
 
         $this->id = $user->ID;
         $this->login = $user->user_login;

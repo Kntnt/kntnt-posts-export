@@ -47,7 +47,7 @@ class Post {
         return self::$all_posts;
     }
 
-    public function __construct( $post ) {
+    private function __construct( $post ) {
 
         $this->id = $post->ID;
         $this->slug = $post->post_name;

@@ -49,7 +49,7 @@ class Attachment {
         return self::$all_attachments;
     }
 
-    public function __construct( $attachment ) {
+    private function __construct( $attachment ) {
 
         $this->id = $attachment->ID;
         $this->slug = $attachment->post_name;
