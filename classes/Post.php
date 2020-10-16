@@ -82,8 +82,35 @@ class Post {
     }
 
     private function attachments( $post ) {
-        $attachments = []; // TODO
+
+        $attachments = [];
+
+        // Get featured image
+        if ( $featured_image_attachment_id = get_metadata_raw( 'post', $post->ID, '_thumbnail_id', true ) ) {
+            $attachments[ $featured_image_attachment_id ] = $featured_image_attachment_id;
+        }
+
+        // Get proper attachments (that is attachments that are attached to the
+        // post as a child post)
+        $proper_attachments = array_keys( get_children( [ 'post_parent' => $post->ID, 'post_type' => 'attachment' ] ) );
+        $attachments += array_combine( $proper_attachments, $proper_attachments );
+
+        // Scan content for references to attachments.
+        $upload_dir = $this->upload_dir();
+        $re = "@(?<=/{$upload_dir}/)([^ \"'`=<>]+)(?=-\d+x\d+\.(jpg|jpeg|png|gif))|(?<=/{$upload_dir}/)(?:[^ \"'`=<>](?!.+-\d+x\d+\.(?:jpg|jpeg|png|gif)))+@iu";
+        preg_match_all( $re, $post->post_content, $matches, PREG_SET_ORDER );
+        foreach ( $matches as $match ) {
+            $path = count( $match ) == 1 ? $match[0] : "{$match[1]}.{$match[2]}";
+            if ( $id = $this->get_attachment_id( $path ) ) {
+                $attachments[ $id ] = $id;
+            }
+        }
+
+        // Apply filter
+        $attachments = apply_filters( 'kntnt-posts-export-post-attachments', array_values( $attachments ), $post );
+
         return $attachments;
+
     }
 
     private function metadata( $post ) {
@@ -92,5 +119,51 @@ class Post {
         $metadata = apply_filters( 'kntnt-post-export-post-metadata', $metadata );
         return $metadata;
     }
+
+    private function get_attachment_id( $path ) {
+
+        $potential_attachment_ids = ( new \WP_Query )->query( [
+            'post_type' => 'attachment',
+            'post_status' => get_post_stati(), // Any status
+            'fields' => 'ids',
+            'meta_query' => [
+                [
+                    'value' => $path,
+                    'compare' => 'LIKE',
+                    'key' => '_wp_attachment_metadata',
+                ],
+            ],
+        ] );
+
+        foreach ( $potential_attachment_ids as $id ) {
+            $meta = get_metadata_raw( 'post', $id, '_wp_attachment_metadata', true );
+            if ( $path == $meta['file'] ) {
+                return $id;
+            }
+        }
+
+        return null;
+
+    }
+
+    // See _wp_upload_dir().
+    private function upload_dir() {
+        static $upload_dir = null;
+        if ( is_null( $upload_dir ) ) {
+            $upload_path = trim( get_option( 'upload_path' ) );
+            if ( empty( $upload_path ) || 'wp-content/uploads' === $upload_path ) {
+                $upload_dir = WP_CONTENT_DIR . '/uploads';
+            }
+            else if ( 0 !== strpos( $upload_path, ABSPATH ) ) {
+                $upload_dir = path_join( ABSPATH, $upload_path );
+            }
+            else {
+                $upload_dir = $upload_path;
+            }
+            $upload_dir = substr( $upload_dir, strlen( ABSPATH ) );
+        }
+        return $upload_dir;
+    }
+
 
 }
