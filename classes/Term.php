@@ -45,14 +45,14 @@ class Term {
 
     public function __construct( $term ) {
 
-        $this->term_id = $term->term_id;
+        $this->id = $term->term_id;
         $this->slug = $term->slug;
         $this->name = $term->name;
         $this->parent = $term->parent;
         $this->taxonomy = $term->taxonomy;
         $this->description = $term->description;
 
-        $metadata = get_metadata_raw( 'term', $this->term_id );
+        $metadata = get_metadata_raw( 'term', $this->id );
         $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
         $this->metadata = apply_filters( 'kntnt-post-export-term-metadata', $metadata );
 
