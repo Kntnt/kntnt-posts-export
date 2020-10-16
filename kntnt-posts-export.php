@@ -7,7 +7,7 @@
  * Plugin Name:       Kntnt Posts Export
  * Plugin URI:        https://www.kntnt.com/
  * GitHub Plugin URI: https://github.com/Kntnt/kntnt-post-export
- * Description:       Provides a tool for exporting pages and posts.
+ * Description:       Provides a tool to export posts with images, attachments, author, terms and metadata that can be imported with Kntnt Posts Import.
  * Version:           0.1.0
  * Author:            Thomas Barregren
  * Author URI:        https://www.kntnt.com/
