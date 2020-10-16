@@ -12,7 +12,7 @@ class Attachment {
 
     public $guid;
 
-    public $post_mime_type;
+    public $mime_type;
 
     public $title;
 
