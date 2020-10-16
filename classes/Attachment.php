@@ -60,13 +60,17 @@ class Attachment {
         $this->excerpt = $attachment->post_excerpt;
         $this->author = $attachment->post_author;
         $this->date = $attachment->post_date;
-
-        $metadata = get_metadata_raw( 'post', $this->id );
-        $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
-        $this->metadata = apply_filters( 'kntnt-post-export-attachment-metadata', $metadata );
+        $this->metadata = $this->metadata( $attachment );
 
         Plugin::log( 'Created %s', $this );
 
+    }
+
+    private function metadata( $attachment ) {
+        $metadata = get_metadata_raw( 'post', $attachment->ID );
+        $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
+        $metadata = apply_filters( 'kntnt-post-export-attachment-metadata', $metadata );
+        return $metadata;
     }
 
 }

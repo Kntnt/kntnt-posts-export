@@ -13,7 +13,7 @@ class Plugin extends Abstract_Plugin {
         return [
             'admin' => [
                 'admin_menu' => [
-                    'Tool'
+                    'Tool',
                 ],
             ],
         ];

@@ -30,7 +30,7 @@ class Term {
             self::$default_metadata_keys = apply_filters( 'kntnt-post-export-term-metadata-keys', self::$default_metadata_keys );
 
             $taxonomies = get_object_taxonomies( 'post' );
-            $taxonomies = apply_filters( 'kntnt-post-export-taxonomies', $taxonomies );
+            $taxonomies = apply_filters( 'kntnt-post-export-taxonomies', $taxonomies, null ); // Same as in Post::terms().
             $terms = get_terms( $taxonomies );
             if ( is_array( $terms ) ) { // If not false nor WP_Error
                 $terms = apply_filters( 'kntnt-post-export-terms', $terms );
@@ -51,13 +51,17 @@ class Term {
         $this->parent = $term->parent;
         $this->taxonomy = $term->taxonomy;
         $this->description = $term->description;
-
-        $metadata = get_metadata_raw( 'term', $this->id );
-        $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
-        $this->metadata = apply_filters( 'kntnt-post-export-term-metadata', $metadata );
+        $this->metadata = $this->metadata( $term );
 
         Plugin::log( 'Created %s', $this );
 
+    }
+
+    private function metadata( $term ) {
+        $metadata = get_metadata_raw( 'term', $term->term_id );
+        $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
+        $metadata = apply_filters( 'kntnt-post-export-term-metadata', $metadata );
+        return $metadata;
     }
 
 }

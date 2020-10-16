@@ -70,13 +70,17 @@ class User {
         $this->status = $user->user_status;
         $this->name = $user->display_name;
         $this->roles = $roles;
-
-        $metadata = get_metadata_raw( 'user', $this->id );
-        $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
-        $this->metadata = apply_filters( 'kntnt-post-export-user-metadata', $metadata );
+        $this->metadata = $this->metadata( $user );
 
         Plugin::log( 'Created %s', $this );
 
+    }
+
+    private function metadata( $user ) {
+        $metadata = get_metadata_raw( 'user', $user->ID );
+        $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
+        $metadata = apply_filters( 'kntnt-post-export-user-metadata', $metadata );
+        return $metadata;
     }
 
 }

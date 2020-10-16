@@ -24,6 +24,8 @@ class Post {
 
     public $terms;
 
+    public $attachments;
+
     public $metadata;
 
     private static $default_metadata_keys = [
@@ -57,23 +59,38 @@ class Post {
         $this->excerpt = $post->post_excerpt;
         $this->author = $post->post_author;
         $this->date = $post->post_date;
-
-        $this->terms = [];
-        $taxonomies = get_object_taxonomies( $post );
-        foreach ( $taxonomies as $taxonomy ) {
-            if ( is_array( $terms = get_the_terms( $post, $taxonomy ) ) ) {
-                foreach ( $terms as $term ) {
-                    $this->terms[] = $term->term_id;
-                }
-            }
-        }
-
-        $metadata = get_metadata_raw( 'post', $this->id );
-        $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
-        $this->metadata = apply_filters( 'kntnt-post-export-post-metadata', $metadata );
+        $this->terms = $this->terms( $post );
+        $this->attachments = $this->attachments( $post );
+        $this->metadata = $this->metadata( $post );
 
         Plugin::log( 'Created %s', $this );
 
+    }
+
+    private function terms( $post ) {
+        $terms = [];
+        $taxonomies = get_object_taxonomies( $post );
+        $taxonomies = apply_filters( 'kntnt-post-export-taxonomies', $taxonomies, $post ); // Same as in Term::export()
+        foreach ( $taxonomies as $taxonomy ) {
+            if ( is_array( $taxonomy_terms = get_the_terms( $post, $taxonomy ) ) ) {
+                foreach ( $taxonomy_terms as $term ) {
+                    $terms[] = $term->term_id;
+                }
+            }
+        }
+        return $terms;
+    }
+
+    private function attachments( $post ) {
+        $attachments = []; // TODO
+        return $attachments;
+    }
+
+    private function metadata( $post ) {
+        $metadata = get_metadata_raw( 'post', $post->ID );
+        $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
+        $metadata = apply_filters( 'kntnt-post-export-post-metadata', $metadata );
+        return $metadata;
     }
 
 }
