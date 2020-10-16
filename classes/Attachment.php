@@ -54,7 +54,7 @@ class Attachment {
         $this->id = $attachment->ID;
         $this->slug = $attachment->post_name;
         $this->guid = $attachment->guid;
-        $this->post_mime_type = $attachment->post_mime_type;
+        $this->mime_type = $attachment->post_mime_type;
         $this->title = $attachment->post_title;
         $this->content = $attachment->post_content;
         $this->excerpt = $attachment->post_excerpt;
