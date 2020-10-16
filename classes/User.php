@@ -61,14 +61,14 @@ class User {
     public function __construct( $user, $roles ) {
 
         $this->id = $user->ID;
-        $this->user_login = $user->user_login;
-        $this->user_pass = $user->user_pass;
-        $this->user_nicename = $user->user_nicename;
-        $this->user_email = $user->user_email;
-        $this->user_url = $user->user_url;
-        $this->user_registered = $user->user_registered;
-        $this->user_status = $user->user_status;
-        $this->display_name = $user->display_name;
+        $this->login = $user->user_login;
+        $this->pass = $user->user_pass;
+        $this->nicename = $user->user_nicename;
+        $this->email = $user->user_email;
+        $this->url = $user->user_url;
+        $this->registered = $user->user_registered;
+        $this->status = $user->user_status;
+        $this->name = $user->display_name;
         $this->roles = $roles;
 
         $metadata = get_metadata_raw( 'user', $this->id );
