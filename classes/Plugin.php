@@ -19,4 +19,17 @@ class Plugin extends Abstract_Plugin {
         ];
     }
 
+    // Removes the element with the provided key and returns it value or
+    // $default if it didn't exist.
+    public static function peel_off( $key, &$array, $default = null ) {
+        if ( array_key_exists( $key, $array ) ) {
+            $val = $array[ $key ];
+            unset( $array[ $key ] );
+        }
+        else {
+            $val = $default;
+        }
+        return $val;
+    }
+
 }
