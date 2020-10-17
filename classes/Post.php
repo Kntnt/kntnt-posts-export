@@ -22,6 +22,8 @@ class Post {
 
     public $date;
 
+    public $status;
+
     public $terms;
 
     public $attachments;
@@ -59,6 +61,7 @@ class Post {
         $this->excerpt = $post->post_excerpt;
         $this->author = $post->post_author;
         $this->date = $post->post_date;
+        $this->status = $post->post_status;
         $this->terms = $this->terms( $post );
         $this->attachments = $this->attachments( $post );
         $this->metadata = $this->metadata( $post );
