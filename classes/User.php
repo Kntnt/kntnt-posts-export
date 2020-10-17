@@ -24,7 +24,27 @@ class User {
 
     public $display_name;
 
-    public $roles;
+    public $role;
+
+    public $first_name;
+
+    public $last_name;
+
+    public $nickname;
+
+    public $description;
+
+    public $rich_editing;
+
+    public $syntax_highlighting;
+
+    public $comment_shortcuts;
+
+    public $admin_color;
+
+    public $show_admin_bar_front;
+
+    public $locale;
 
     public $metadata;
 
@@ -51,26 +71,37 @@ class User {
             $users = get_users();
             $users = apply_filters( 'kntnt-post-export-users', $users );
             foreach ( $users as $user ) {
-                self::$all_users[ $user->ID ] = new User( $user->data, $user->roles );
+                self::$all_users[ $user->ID ] = new User( $user->data, $user->roles[0] );
             }
 
         }
         return self::$all_users;
     }
 
-    private function __construct( $user, $roles ) {
+    private function __construct( $user, $role ) {
 
         $this->id = $user->ID;
         $this->login = $user->user_login;
         $this->pass = $user->user_pass;
+        $this->display_name = $user->display_name;
         $this->nicename = $user->user_nicename;
         $this->email = $user->user_email;
         $this->url = $user->user_url;
         $this->registered = $user->user_registered;
-        $this->status = $user->user_status;
-        $this->name = $user->display_name;
-        $this->roles = $roles;
+        $this->role = $role;
+
         $this->metadata = $this->metadata( $user );
+
+        $this->first_name = Plugin::peel_off( 'first_name', $this->metadata, '' )[0];
+        $this->last_name = Plugin::peel_off( 'last_name', $this->metadata, '' )[0];
+        $this->nickname = Plugin::peel_off( 'nickname', $this->metadata, '' )[0];
+        $this->description = Plugin::peel_off( 'description', $this->metadata, '' )[0];
+        $this->rich_editing = Plugin::peel_off( 'rich_editing', $this->metadata, 'true' )[0]; // Must be string, not boolean.
+        $this->syntax_highlighting = Plugin::peel_off( 'syntax_highlighting', $this->metadata, 'true' )[0]; // Must be string, not boolean.
+        $this->comment_shortcuts = Plugin::peel_off( 'comment_shortcuts', $this->metadata, 'false' )[0]; // Must be string, not boolean.
+        $this->admin_color = Plugin::peel_off( 'admin_color', $this->metadata, 'fresh' )[0];
+        $this->show_admin_bar_front = Plugin::peel_off( 'show_admin_bar_front', $this->metadata, 'true' )[0]; // Must be string, not boolean.
+        $this->locale = Plugin::peel_off( 'locale', $this->metadata, '' )[0];
 
         Plugin::log( 'Created %s', $this );
 
