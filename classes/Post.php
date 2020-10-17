@@ -74,7 +74,7 @@ class Post {
         foreach ( $taxonomies as $taxonomy ) {
             if ( is_array( $taxonomy_terms = get_the_terms( $post, $taxonomy ) ) ) {
                 foreach ( $taxonomy_terms as $term ) {
-                    $terms[] = $term->term_id;
+                    $terms[$taxonomy][] = $term->term_id;
                 }
             }
         }
