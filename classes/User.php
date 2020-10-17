@@ -20,8 +20,6 @@ class User {
 
     public $registered;
 
-    public $status;
-
     public $display_name;
 
     public $role;
