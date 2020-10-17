@@ -4,7 +4,9 @@
 namespace Kntnt\Posts_Export;
 
 
-class Tool {
+class Export_Tool {
+
+    private $errors = [];
 
     private $export = '';
 
@@ -13,31 +15,20 @@ class Tool {
     }
 
     public function tool() {
-
         Plugin::log();
-
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( __( 'Unauthorized use.', 'kntnt-posts-export' ) );
         }
-
         if ( $_POST ) {
-
-            if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], Plugin::ns() ) ) {
-                return;
+            if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], Plugin::ns() ) ) {
+                $this->export();
             }
-
-            // Export
-            $export = new \stdClass();
-            $export->attachments = Attachment::export();
-            $export->users = User::export();
-            $export->post_terms = Term::export();
-            $export->posts = Post::export();
-            $this->export = json_encode( $export );
-
+            else {
+                $this->errors[] = __( "Couldn't export; the form has expired. Please, try again.", 'kntnt-posts-export' );
+                Plugin::error( "Couldn't verify nonce." );
+            }
         }
-
         $this->render_page();
-
     }
 
     public function render_page() {
@@ -51,6 +42,15 @@ class Tool {
             'export' => $this->export,
         ] );
 
+    }
+
+    private function export() {
+        $export = new \stdClass();
+        $export->attachments = Attachment::export();
+        $export->users = User::export();
+        $export->post_terms = Term::export();
+        $export->posts = Post::export();
+        $this->export = json_encode( $export );
     }
 
 }
