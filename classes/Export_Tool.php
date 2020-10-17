@@ -40,6 +40,7 @@ class Export_Tool {
             'title' => __( 'Kntnt Posts export', 'kntnt-posts-export' ),
             'submit_button_text' => __( 'Export', 'kntnt-posts-export' ),
             'export' => $this->export,
+            'errors' => $this->errors,
         ] );
 
     }
