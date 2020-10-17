@@ -86,7 +86,7 @@ class Post {
         $attachments = [];
 
         // Get featured image
-        if ( $featured_image_attachment_id = get_metadata_raw( 'post', $post->ID, '_thumbnail_id', true ) ) {
+        if ( $featured_image_attachment_id = (int) get_metadata_raw( 'post', $post->ID, '_thumbnail_id', true ) ) {
             $attachments[ $featured_image_attachment_id ] = $featured_image_attachment_id;
         }
 
