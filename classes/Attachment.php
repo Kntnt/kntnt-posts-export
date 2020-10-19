@@ -34,6 +34,8 @@ class Attachment {
 
     private static $all_attachments = null;
 
+    private static $upload_dir = null;
+
     public static function export() {
         if ( is_null( self::$all_attachments ) ) {
 
@@ -61,6 +63,7 @@ class Attachment {
         $this->author = $attachment->post_author;
         $this->date = $attachment->post_date;
         $this->metadata = $this->metadata( $attachment );
+        $this->src = isset( $this->metadata['_wp_attached_file'] ) && isset( $this->metadata['_wp_attached_file'][0] ) ? Plugin::upload_url( $this->metadata['_wp_attached_file'][0] ) : false;
 
         Plugin::log( 'Created %s', $this );
 
