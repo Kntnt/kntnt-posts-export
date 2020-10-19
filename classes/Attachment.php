@@ -26,6 +26,8 @@ class Attachment {
 
     public $metadata;
 
+    public $src;
+
     private static $default_metadata_keys = [
         '_wp_attached_file',
         '_wp_attachment_metadata',
