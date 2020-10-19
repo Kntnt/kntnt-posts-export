@@ -99,7 +99,7 @@ class Post {
         $attachments += array_combine( $proper_attachments, $proper_attachments );
 
         // Scan content for references to attachments.
-        $upload_dir = $this->upload_dir();
+        $upload_dir = Plugin::upload_dir();
         $re = "@(?<=/{$upload_dir}/)([^ \"'`=<>]+)(?=-\d+x\d+\.(jpg|jpeg|png|gif))|(?<=/{$upload_dir}/)(?:[^ \"'`=<>](?!.+-\d+x\d+\.(?:jpg|jpeg|png|gif)))+@iu";
         preg_match_all( $re, $post->post_content, $matches, PREG_SET_ORDER );
         foreach ( $matches as $match ) {
@@ -148,25 +148,5 @@ class Post {
         return null;
 
     }
-
-    // See _wp_upload_dir().
-    private function upload_dir() {
-        static $upload_dir = null;
-        if ( is_null( $upload_dir ) ) {
-            $upload_path = trim( get_option( 'upload_path' ) );
-            if ( empty( $upload_path ) || 'wp-content/uploads' === $upload_path ) {
-                $upload_dir = WP_CONTENT_DIR . '/uploads';
-            }
-            else if ( 0 !== strpos( $upload_path, ABSPATH ) ) {
-                $upload_dir = path_join( ABSPATH, $upload_path );
-            }
-            else {
-                $upload_dir = $upload_path;
-            }
-            $upload_dir = substr( $upload_dir, strlen( ABSPATH ) );
-        }
-        return $upload_dir;
-    }
-
 
 }
