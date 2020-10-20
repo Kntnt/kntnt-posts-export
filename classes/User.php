@@ -88,7 +88,7 @@ class User {
         $this->registered = $user->user_registered;
         $this->role = $role;
 
-        $this->metadata = $this->metadata( $user );
+        $this->metadata = (array) $this->metadata( $user ); // Associative arrays becomes objets in JSON.
 
         $this->first_name = Plugin::peel_off( 'first_name', $this->metadata, '' )[0];
         $this->last_name = Plugin::peel_off( 'last_name', $this->metadata, '' )[0];

@@ -41,7 +41,7 @@ class Post {
 
             self::$default_metadata_keys = apply_filters( 'kntnt-post-export-post-metadata-keys', self::$default_metadata_keys );
 
-            $posts = get_posts( [ 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => null ] );
+            $posts = get_posts( [ 'post_type' => 'post', 'post_status' => 'publish', 'numberposts' => - 1 ] );
             $posts = apply_filters( 'kntnt-post-export-posts', $posts );
             foreach ( $posts as $post ) {
                 self::$all_posts[ $post->ID ] = new Post( $post );
@@ -64,7 +64,7 @@ class Post {
         $this->status = $post->post_status;
         $this->terms = $this->terms( $post );
         $this->attachments = $this->attachments( $post );
-        $this->metadata = $this->metadata( $post );
+        $this->metadata = (array) $this->metadata( $post ); // Associative arrays becomes objets in JSON.
 
         Plugin::log( 'Created %s', $this );
 
@@ -77,7 +77,7 @@ class Post {
         foreach ( $taxonomies as $taxonomy ) {
             if ( is_array( $taxonomy_terms = get_the_terms( $post, $taxonomy ) ) ) {
                 foreach ( $taxonomy_terms as $term ) {
-                    $terms[$taxonomy][] = $term->term_id;
+                    $terms[ $taxonomy ][] = $term->term_id;
                 }
             }
         }

@@ -43,7 +43,7 @@ class Attachment {
 
             self::$default_metadata_keys = apply_filters( 'kntnt-post-export-attachment-metadata-keys', self::$default_metadata_keys );
 
-            $attachments = get_posts( [ 'post_type' => 'attachment', 'post_status' => null, 'numberposts' => null ] );
+            $attachments = get_posts( [ 'post_type' => 'attachment', 'post_status' => null, 'numberposts' => -1 ] );
             $attachments = apply_filters( 'kntnt-post-export-attachments', $attachments );
             foreach ( $attachments as $attachment ) {
                 self::$all_attachments[ $attachment->ID ] = new Attachment( $attachment );

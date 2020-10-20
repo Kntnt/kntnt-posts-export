@@ -20,6 +20,8 @@ class Term {
 
     public $metadata;
 
+    public $default;
+
     private static $default_metadata_keys = [];
 
     private static $all_terms = null;
@@ -31,11 +33,25 @@ class Term {
 
             $taxonomies = get_object_taxonomies( 'post' );
             $taxonomies = apply_filters( 'kntnt-post-export-taxonomies', $taxonomies, null ); // Same as in Post::terms().
+
+            $default_term_ids = [];
+            foreach ( $taxonomies as $taxonomy ) {
+                if ( 'category' == $taxonomy ) {
+                    $default_term_ids[ (int) get_option( 'default_category' ) ] = true;
+                }
+                else {
+                    $taxonomy_object = get_taxonomy( $taxonomy );
+                    if ( $taxonomy_object->default_term ) {
+                        $default_term_ids[ (int) get_option( "default_term_$taxonomy" ) ] = true;
+                    }
+                }
+            }
+
             $terms = get_terms( $taxonomies );
             if ( is_array( $terms ) ) { // If not false nor WP_Error
                 $terms = apply_filters( 'kntnt-post-export-terms', $terms );
-                foreach ( $terms as $term ) {
-                    self::$all_terms[ $term->term_id ] = new Term( $term );
+                 foreach ( $terms as $term ) {
+                    self::$all_terms[ $term->term_id ] = new Term( $term, isset( $default_term_ids[ $term->term_id ] ) );
                 }
             }
 
@@ -43,7 +59,7 @@ class Term {
         return self::$all_terms;
     }
 
-    public function __construct( $term ) {
+    public function __construct( $term, $is_default_term ) {
 
         $this->id = $term->term_id;
         $this->slug = $term->slug;
@@ -51,7 +67,8 @@ class Term {
         $this->parent = $term->parent;
         $this->taxonomy = $term->taxonomy;
         $this->description = $term->description;
-        $this->metadata = $this->metadata( $term );
+        $this->metadata = (array) $this->metadata( $term ); // Associative arrays becomes objets in JSON.
+        $this->default = $is_default_term;
 
         Plugin::log( 'Created %s', $this );
 
