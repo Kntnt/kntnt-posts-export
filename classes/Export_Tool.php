@@ -11,7 +11,7 @@ class Export_Tool {
     private $export = '';
 
     public function run() {
-        add_management_page( 'Kntnt Posts export', 'Posts export', 'manage_options', 'kntnt-posts-export', [ $this, 'tool' ] );
+        add_management_page( 'Kntnt Posts Export', 'Posts export', 'manage_options', 'kntnt-posts-export', [ $this, 'tool' ] );
     }
 
     public function tool() {

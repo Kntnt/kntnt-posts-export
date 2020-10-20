@@ -43,7 +43,7 @@ class Attachment {
 
             self::$default_metadata_keys = apply_filters( 'kntnt-post-export-attachment-metadata-keys', self::$default_metadata_keys );
 
-            $attachments = get_posts( [ 'post_type' => 'attachment', 'post_status' => null, 'numberposts' => -1 ] );
+            $attachments = get_posts( [ 'post_type' => 'attachment', 'post_status' => null, 'numberposts' => - 1 ] );
             $attachments = apply_filters( 'kntnt-post-export-attachments', $attachments );
             foreach ( $attachments as $attachment ) {
                 self::$all_attachments[ $attachment->ID ] = new Attachment( $attachment );
@@ -72,10 +72,19 @@ class Attachment {
     }
 
     private function metadata( $attachment ) {
+
         $metadata = get_metadata_raw( 'post', $attachment->ID );
         $metadata = array_intersect_key( $metadata, array_flip( self::$default_metadata_keys ) );
+
+        if ( isset( $metadata['_wp_attachment_metadata'] ) && isset( $metadata['_wp_attachment_metadata'][0] ) ) {
+            $metadata['_wp_attachment_metadata'] = unserialize( $metadata['_wp_attachment_metadata'][0] );
+            unset( $metadata['_wp_attachment_metadata']['sizes'] );
+        }
+
         $metadata = apply_filters( 'kntnt-post-export-attachment-metadata', $metadata );
+
         return $metadata;
+
     }
 
 }
