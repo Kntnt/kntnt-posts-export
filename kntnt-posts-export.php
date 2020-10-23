@@ -1,14 +1,13 @@
 <?php
 
+
 /**
- * Plugin main file.
- *
  * @wordpress-plugin
  * Plugin Name:       Kntnt Posts Export
  * Plugin URI:        https://www.kntnt.com/
  * GitHub Plugin URI: https://github.com/Kntnt/kntnt-post-export
  * Description:       Provides a tool to export posts with images, attachments, author, terms and metadata that can be imported with Kntnt Posts Import.
- * Version:           0.2.0
+ * Version:           0.2.1
  * Author:            Thomas Barregren
  * Author URI:        https://www.kntnt.com/
  * License:           GPL-3.0+
