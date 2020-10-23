@@ -6,7 +6,7 @@ namespace Kntnt\Posts_Export;
 
 abstract class Abstract_Plugin {
 
-    static private $ns;
+    static protected $ns;
 
     static private $plugin_dir;
 

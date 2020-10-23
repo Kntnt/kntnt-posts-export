@@ -6,52 +6,88 @@ namespace Kntnt\Posts_Export;
 
 class Export_Tool {
 
-    private $errors = [];
+    private $export_file_url = null;
 
-    private $export = '';
+    private $export_file_valid_until = null;
 
     public function run() {
+        add_filter( 'upload_mimes', [ $this, 'allow_json' ], 10 );
         add_management_page( 'Kntnt Posts Export', 'Posts export', 'manage_options', 'kntnt-posts-export', [ $this, 'tool' ] );
     }
 
+    public function allow_json( $mime_types ) {
+        $mime_types['json'] = 'application/json';
+        return $mime_types;
+    }
+
     public function tool() {
+
         Plugin::log();
+
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( __( 'Unauthorized use.', 'kntnt-posts-export' ) );
         }
+
+        @ini_set( 'max_execution_time', '0' );
+
         if ( $_POST ) {
             if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], Plugin::ns() ) ) {
                 $this->export();
             }
             else {
-                $this->errors[] = __( "Couldn't export; the form has expired. Please, try again.", 'kntnt-posts-export' );
-                Plugin::error( "Couldn't verify nonce." );
+                Plugin::error( __( "Couldn't export. The form has expired. Please, try again.", 'kntnt-posts-export' ) );
             }
         }
+
         $this->render_page();
+
     }
 
-    public function render_page() {
+    private function render_page() {
 
         Plugin::log();
 
         Plugin::load_from_includes( 'tool.php', [
             'ns' => Plugin::ns(),
-            'title' => __( 'Kntnt Posts export', 'kntnt-posts-export' ),
+            'title' => get_admin_page_title(),
             'submit_button_text' => __( 'Export', 'kntnt-posts-export' ),
-            'export' => $this->export,
-            'errors' => $this->errors,
+            'export_file_url' => $this->export_file_url,
+            'export_file_valid_until' => $this->export_file_valid_until,
+            'errors' => Plugin::errors(),
         ] );
 
     }
 
     private function export() {
+
+        date_default_timezone_set( get_option( 'timezone_string', 'UTC' ) );
+        setlocale( LC_TIME, get_user_locale() );
+
         $export = new \stdClass();
         $export->attachments = Attachment::export();
         $export->users = User::export();
         $export->post_terms = Term::export();
         $export->posts = Post::export();
-        $this->export = json_encode( $export );
+        $export = json_encode( $export );
+
+        $name = 'kntnt-posts-export-' . date( 'ymd-His' );
+
+        $file_info = Plugin::save_to_file( $export, $suffix = 'json', $name );
+
+        if ( $file_info['error'] ) {
+            Plugin::error( __( 'Failed to save export file. %s', 'kntnt-posts-export' ), $file_info['error'] );
+        }
+        else {
+
+            $valid_until = time() + HOUR_IN_SECONDS;
+
+            wp_schedule_single_event( $valid_until, 'kntnt-posts-export-file-delete', [ $file_info['file'] ] );
+
+            $this->export_file_url = $file_info['url'];
+            $this->export_file_valid_until = strftime( '%c', $valid_until );
+
+        }
+
     }
 
 }
