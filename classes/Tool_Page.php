@@ -28,8 +28,6 @@ class Tool_Page {
             wp_die( __( 'Unauthorized use.', 'kntnt-posts-export' ) );
         }
 
-        @ini_set( 'max_execution_time', '0' );
-
         if ( $_POST ) {
             if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], Plugin::ns() ) ) {
                 $this->export();
@@ -59,6 +57,8 @@ class Tool_Page {
     }
 
     private function export() {
+
+        @ini_set( 'max_execution_time', '0' );
 
         date_default_timezone_set( get_option( 'timezone_string', 'UTC' ) );
         setlocale( LC_TIME, get_user_locale() );
