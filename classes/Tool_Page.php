@@ -4,7 +4,7 @@
 namespace Kntnt\Posts_Export;
 
 
-class Export_Tool {
+class Tool_Page {
 
     private $export_file_url = null;
 

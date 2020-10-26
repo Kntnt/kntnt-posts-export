@@ -44,7 +44,7 @@ class Plugin extends Abstract_Plugin {
         return [
             'admin' => [
                 'admin_menu' => [
-                    'Export_Tool',
+                    'Tool_Page',
                 ],
             ],
             'cron' => [
