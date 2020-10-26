@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Kntnt\PostS_Export;
+namespace Kntnt\Posts_Export;
 
 
 class Local_Loader {
