@@ -63,6 +63,8 @@ class Tool_Page {
         date_default_timezone_set( get_option( 'timezone_string', 'UTC' ) );
         setlocale( LC_TIME, get_user_locale() );
 
+        do_action( 'kntnt-posts-export-add-local-code' );
+
         $export = new \stdClass();
         $export->attachments = Attachment::export();
         $export->users = User::export();
@@ -79,7 +81,7 @@ class Tool_Page {
         }
         else {
 
-            $valid_until = time() + 5* MINUTE_IN_SECONDS;
+            $valid_until = time() + 5 * MINUTE_IN_SECONDS;
 
             wp_schedule_single_event( $valid_until, 'kntnt-posts-export-file-delete', [ $file_info['file'] ] );
 

@@ -46,6 +46,9 @@ class Plugin extends Abstract_Plugin {
                 'admin_menu' => [
                     'Tool_Page',
                 ],
+                'kntnt-posts-export-add-local-code' => [
+                    'Local_Loader',
+                ],
             ],
             'cron' => [
                 'init' => [

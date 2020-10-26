@@ -1,0 +1,39 @@
+<?php
+
+// Any file ending with .php will be included when an export starts. You can use
+// it to implement actions and filters used by the exporter. Below follow
+// examples on how it can be used. Alternatively, you can implement the actions
+// and filters on the action hook `kntnt-posts-export-load-local-files`.
+
+
+namespace Kntnt\Posts_Import\Local;
+
+
+add_filter( 'kntnt-post-export-post-metadata-keys', function ( $default_metadata_keys ) {
+    $default_metadata_keys[] = 'enclosure';
+    $default_metadata_keys[] = '_genesis_description';
+    $default_metadata_keys[] = 'lead';
+    $default_metadata_keys[] = 'related_articles';
+    return $default_metadata_keys;
+} );
+
+
+add_filter( 'kntnt-post-export-user-metadata-keys', function ( $default_metadata_keys ) {
+    $default_metadata_keys[] = 'avatar_manager_custom_avatar';
+    return $default_metadata_keys;
+} );
+
+
+add_filter( 'kntnt-post-export-term-metadata-keys', function ( $default_metadata_keys ) {
+    $default_metadata_keys[] = 'archive_body';
+    return $default_metadata_keys;
+} );
+
+
+add_filter( 'kntnt-post-export-taxonomies', function ( $taxonomies ) {
+    return [
+        'category',
+        'post_tag',
+        'collection',
+    ];
+} );
