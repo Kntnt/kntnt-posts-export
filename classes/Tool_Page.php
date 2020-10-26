@@ -79,7 +79,7 @@ class Tool_Page {
         }
         else {
 
-            $valid_until = time() + HOUR_IN_SECONDS;
+            $valid_until = time() + 5* MINUTE_IN_SECONDS;
 
             wp_schedule_single_event( $valid_until, 'kntnt-posts-export-file-delete', [ $file_info['file'] ] );
 
