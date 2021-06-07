@@ -22,7 +22,7 @@ class Tool_Page {
 
     public function tool() {
 
-        Plugin::log();
+        Plugin::debug();
 
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( __( 'Unauthorized use.', 'kntnt-posts-export' ) );
@@ -43,7 +43,7 @@ class Tool_Page {
 
     private function render_page() {
 
-        Plugin::log();
+        Plugin::debug();
 
         Plugin::load_from_includes( 'tool.php', [
             'ns' => Plugin::ns(),

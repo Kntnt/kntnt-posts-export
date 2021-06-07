@@ -67,7 +67,7 @@ class Attachment {
         $this->metadata = $this->metadata( $attachment );
         $this->src = isset( $this->metadata['_wp_attached_file'] ) && isset( $this->metadata['_wp_attached_file'][0] ) ? Plugin::upload_url( $this->metadata['_wp_attached_file'][0] ) : false;
 
-        Plugin::log( 'Created %s', $this );
+        Plugin::debug( 'Created %s', $this );
 
     }
 

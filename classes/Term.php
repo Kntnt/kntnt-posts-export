@@ -70,7 +70,7 @@ class Term {
         $this->metadata = (array) $this->metadata( $term ); // Associative arrays becomes objets in JSON.
         $this->default = $is_default_term;
 
-        Plugin::log( 'Created %s', $this );
+        Plugin::debug( 'Created %s', $this );
 
     }
 

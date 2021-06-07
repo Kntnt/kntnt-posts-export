@@ -66,7 +66,7 @@ class Post {
         $this->attachments = $this->attachments( $post );
         $this->metadata = (array) $this->metadata( $post ); // Associative arrays becomes objets in JSON.
 
-        Plugin::log( 'Created %s', $this );
+        Plugin::debug( 'Created %s', $this );
 
     }
 

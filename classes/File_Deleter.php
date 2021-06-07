@@ -11,7 +11,7 @@ class File_Deleter {
     }
 
     public function delete( $file ) {
-        Plugin::log( 'Deleting file %s', $file );
+        Plugin::debug( 'Deleting file %s', $file );
         $ok = @unlink( $file );
         if ( ! $ok ) {
             Plugin::error( 'Failed deleting %s', $file );

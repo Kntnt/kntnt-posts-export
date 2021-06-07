@@ -101,7 +101,7 @@ class User {
         $this->show_admin_bar_front = Plugin::peel_off( 'show_admin_bar_front', $this->metadata, 'true' )[0]; // Must be string, not boolean.
         $this->locale = Plugin::peel_off( 'locale', $this->metadata, '' )[0];
 
-        Plugin::log( 'Created %s', $this );
+        Plugin::debug( 'Created %s', $this );
 
     }
 
